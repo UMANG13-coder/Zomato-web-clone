@@ -3,7 +3,7 @@ import AWS from 'aws-sdk';
 import multer from 'multer';
 
 import { ImageModel } from '../../database/allModules'
-import { IdValidation } from '../../validation/common.validation'
+// import { IdValidation } from '../../validation/common.validation'
 import { s3Upload } from '../../utils/s3'
 
 const Router = express.Router();
@@ -20,8 +20,10 @@ const upload = multer({ storage: storage });
  */
 Router.get('/:_id', async (req, res) => {
     try {
+        // const { _id } = req.params;
+        // await IdValidation(req.params);
         const image = await ImageModel.findById(req.params._id);
-        await IdValidation(req.params._id);
+
 
         return res.status(200).json({ image });
     } catch (error) {
@@ -36,40 +38,40 @@ Router.get('/:_id', async (req, res) => {
  * Access    Public
  * Method    POST
  */
-Router.post('/', upload.single("file"), async (req, res) => {
+Router.post("/", upload.single("File"), async (req, res) => {
     try {
-        const file = req.file;
+        const File = req.file;
 
         const bucketOptions = {
-            Bucket: "zomato-full-clone",
-            Key: file.originalname,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-            ACL: "public-read"
-        }
+            Bucket: "zomato-web-clone",
+            Key: File.originalname,
+            Body: File.buffer,
+            ContentType: File.mimetype,
+            ACL: "public-read", // Access Control List
+        };
 
         const uploadImage = await s3Upload(bucketOptions);
 
         const dbUpload = await ImageModel.create({
-            images: [{
-                location: uploadImage.Location,
-            },],
+            images: [
+                {
+                    location: uploadImage.Location,
+                },
+            ],
         });
 
         return res.status(200).json({ dbUpload });
     } catch (error) {
-        return res.status(500).json({
-            error: error.message
-        })
+        return res.status(500).json({ error: error.message });
     }
 });
 
-// Router.post("/", upload.array("file", 4), async (req, res) => {
+// Router.post("/", upload.array("file", 2), async (req, res) => {
 //   try {
-//     const file = req.files;
+//     const file = req.file;
 
 //     const bucketOptions = {
-//       Bucket: "zomato-full-clone",
+//       Bucket: "zomato-web-clone",
 //       Key: file.originalname,
 //       Body: file.buffer,
 //       ContentType: file.mimetype,
@@ -78,15 +80,15 @@ Router.post('/', upload.single("file"), async (req, res) => {
 
 //     const uploadImage = await s3Upload(bucketOptions);
 
-//     // const dbUpload = await ImageModel.create({
-//     //   images: [
-//     //     {
-//     //       location: uploadImage.Location,
-//     //     },
-//     //   ],
-//     // });
+//     const dbUpload = await ImageModel.create({
+//       images: [
+//         {
+//           location: uploadImage.Location,
+//         },
+//       ],
+//     });
 
-//     return res.status(200).json({ uploadImage });
+//     return res.status(200).json({ dbUpload });
 //   } catch (error) {
 //     return res.status(500).json({ error: error.message });
 //   }

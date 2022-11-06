@@ -9,7 +9,7 @@ const FoodSchema = new mongoose.Schema(
         category: { type: String, required: true },
         photo: {
             type: mongoose.Types.ObjectId,
-            ref: "imanges",
+            ref: "images",
         },
         prices: { type: Number, required: true },
         addOnes: [{
@@ -18,7 +18,7 @@ const FoodSchema = new mongoose.Schema(
         },],
         restaurant: {
             type: mongoose.Types.ObjectId,
-            ref: "resturants",
+            ref: "restaurants",
             required: true,
         }
     },

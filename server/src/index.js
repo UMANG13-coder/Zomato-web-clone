@@ -2,6 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 import passport from 'passport';
 import session from 'express-session'
+import cors from 'cors';
+import helmet from 'helmet';
 
 import privateConfig from './config/route.config';
 import googleAuthConfig from './config/google.config'
@@ -23,6 +25,8 @@ const app = express();
 privateConfig(passport);
 googleAuthConfig(passport);
 
+app.use(cors({ origin: "http://localhost:3000" }));
+app.use(helmet());
 app.use(express.json());
 app.use(session({ secret: process.env.SECRETORKEY }));
 app.use(passport.initialize());

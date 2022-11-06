@@ -33,4 +33,4 @@ RestaurantSchema.methods.get_id = function () {
     return this._id.toString();
 }
 
-export const RestaurantModel = mongoose.model("resturants", RestaurantSchema)
+export const RestaurantModel = mongoose.model("restaurants", RestaurantSchema)
